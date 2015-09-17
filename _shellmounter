@@ -1,0 +1,30 @@
+#compdef usbmount
+local -a args
+
+if (( CURRENT == 2 )); then
+	args=(	'mount: mount by partition, disk, or label'
+		'unmount: mount by partition, disk, label or mount point'
+		'toggle: toggle between mounted or unmounted'
+		'status: show statuts of managed partitions'
+	)
+	_describe -t commands 'operation' args
+return
+fi
+
+# echo "$CURRENT $words"
+if (( CURRENT == 3 )); then
+	case "$words[2]" in
+		toggle)
+			eval "$($ZSH_USBMOUNT_SCRIPT complete mount)"
+			_describe -t commands 'device' args
+			;;
+		mount)
+			eval "$($ZSH_USBMOUNT_SCRIPT complete mount)"
+			_describe -t commands 'device' args
+			;;
+		unmount)
+			eval "$($ZSH_USBMOUNT_SCRIPT complete unmount)"
+			_describe -t commands 'device' args
+			;;
+	esac
+fi
