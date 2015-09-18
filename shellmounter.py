@@ -6,13 +6,13 @@ import xml.etree.ElementTree as etree
 DBUS_OBJECT = 'org.freedesktop.UDisks2'
 DBUS_PATH = '/org/freedesktop/UDisks2/block_devices'
 
-bus = dbus.SystemBus()
+g_bus = dbus.SystemBus()
 
 
 def comm_get_device_info(info):
     str_info = info['label']
     if str_info == '':
-        obj = bus.get_object(DBUS_OBJECT, path)
+        obj = g_bus.get_object(DBUS_OBJECT, path)
         iface = dbus.Interface(obj, 'org.freedesktop.DBus.Properties')
 
         vendor = ''
@@ -42,7 +42,7 @@ def comm_bytes_to_str(bytes):
 
 def comm_refresh_info():
     global g_blocks
-    obj = bus.get_object(DBUS_OBJECT, DBUS_PATH)
+    obj = g_bus.get_object(DBUS_OBJECT, DBUS_PATH)
     iface = dbus.Interface(obj, 'org.freedesktop.DBus.Introspectable')
     tree = etree.fromstring(iface.Introspect())
     blocks = [i.get('name') for i in tree]
@@ -50,7 +50,7 @@ def comm_refresh_info():
     ret = {}
     for block in blocks:
         info = {}
-        obj = bus.get_object(DBUS_OBJECT, DBUS_PATH + '/' + block)
+        obj = g_bus.get_object(DBUS_OBJECT, DBUS_PATH + '/' + block)
         iface = dbus.Interface(obj, 'org.freedesktop.DBus.Properties')
 
         namespace = DBUS_OBJECT + '.Block'
@@ -88,7 +88,7 @@ def comm_refresh_info():
 
 def comm_mount(block):
     try:
-        obj = bus.get_object(DBUS_OBJECT, DBUS_PATH + '/' + block)
+        obj = g_bus.get_object(DBUS_OBJECT, DBUS_PATH + '/' + block)
         array = dbus.Array(signature='s')
         path = obj.Mount(array, dbus_interface=DBUS_OBJECT + '.Filesystem')
         return {'succ': True, 'path': path}
@@ -100,7 +100,7 @@ def comm_mount(block):
 
 def comm_unmount(block):
     try:
-        obj = bus.get_object(DBUS_OBJECT, DBUS_PATH + '/' + block)
+        obj = g_bus.get_object(DBUS_OBJECT, DBUS_PATH + '/' + block)
         array = dbus.Array(signature='s')
         obj.Unmount(array, dbus_interface=DBUS_OBJECT + '.Filesystem')
         return {'succ': True}
