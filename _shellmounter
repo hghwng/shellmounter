@@ -12,7 +12,7 @@ return
 fi
 
 # echo "$CURRENT $words"
-if (( CURRENT == 3 )); then
+if (( CURRENT >= 3 )); then
 	case "$words[2]" in
 		toggle)
 			eval "$($ZSH_SHELLMOUNTER_SCRIPT complete mount)"
