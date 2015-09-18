@@ -211,7 +211,7 @@ def cmd_mount(oplist):
     elif len(completed) == 1:
         g_cwd = completed[0]
     else:
-        util_message('Info: Multiple directories mounted:')
+        util_message('Info: multiple directories mounted:')
         for i in completed:
             util_message('\t' + i)
         g_cwd = os.path.commonprefix(completed)
