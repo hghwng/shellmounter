@@ -197,6 +197,7 @@ def util_match_block(args):
 
 
 def cmd_mount(oplist):
+    global g_cwd
     completed = []
     for block in oplist:
         ret = comm_mount(block)
@@ -208,14 +209,12 @@ def cmd_mount(oplist):
     if len(completed) == 0:
         return
     elif len(completed) == 1:
-        util_exec('PWD=' + util_quote(completed[0]))
-        pass
+        g_cwd = completed[0]
     else:
         util_message('Info: Multiple directories mounted:')
         for i in completed:
             util_message('\t' + i)
-        path = os.path.commonprefix(completed)
-        util_exec('PWD=' + util_quote(path))
+        g_cwd = os.path.commonprefix(completed)
 
 
 def cmd_toggle(args):
@@ -254,14 +253,12 @@ def cmd_toggle(args):
 
 
 def cmd_unmount(oplist):
-    cwd = os.getenv('OLDPWD')
-
-    # cd to parent if cwd is inside mountpoints being unmounted
+    # cd to parent if g_cwd is inside mountpoints being unmounted
+    global g_cwd
     for block in oplist:
         for i in g_blocks[block]['mountpoints']:
-            if cwd.startswith(i):
-                cwd = os.path.dirname(i)
-    util_exec('PWD=' + util_quote(cwd))
+            if g_cwd.startswith(i):
+                g_cwd = os.path.dirname(i)
 
     used_dirs = []
     for block in oplist:
@@ -325,4 +322,6 @@ def main():
     return cmd_help()
 
 if __name__ == '__main__':
+    g_cwd = os.getenv('OLDPWD')
     main()
+    util_exec('PWD=' + util_quote(g_cwd))
