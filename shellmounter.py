@@ -208,13 +208,14 @@ def cmd_mount(oplist):
     if len(completed) == 0:
         return
     elif len(completed) == 1:
-        util_exec('cd ' + util_quote(completed[0]))
+        util_exec('PWD=' + util_quote(completed[0]))
+        pass
     else:
         util_message('Info: Multiple directories mounted:')
         for i in completed:
             util_message('\t' + i)
         path = os.path.commonprefix(completed)
-        util_exec('cd ' + util_quote(path))
+        util_exec('PWD=' + util_quote(path))
 
 
 def cmd_toggle(args):
@@ -253,20 +254,14 @@ def cmd_toggle(args):
 
 
 def cmd_unmount(oplist):
-    cwd = os.getcwd()
+    cwd = os.getenv('OLDPWD')
 
-    # change cwd out of mountpoints to unmount
-    # then call us to unmount
+    # cd to parent if cwd is inside mountpoints being unmounted
     for block in oplist:
         for i in g_blocks[block]['mountpoints']:
             if cwd.startswith(i):
                 cwd = os.path.dirname(i)
-
-    if cwd != os.getcwd():
-        util_exec('cd ' + util_quote(cwd))
-        args = [sys.argv[0], 'unmount'] + sys.argv[2:]
-        util_exec(' '.join((util_quote(i) for i in args)))
-        return
+    util_exec('PWD=' + util_quote(cwd))
 
     used_dirs = []
     for block in oplist:
