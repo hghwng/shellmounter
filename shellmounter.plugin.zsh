@@ -1,11 +1,11 @@
-ZSH_USBMOUNT_SCRIPT=${0:a:h}/usbmount.py
+ZSH_SHELLMOUNTER_SCRIPT=${0:a:h}/shellmounter.py
 
-function usbmount() {
-	cmd="$($ZSH_USBMOUNT_SCRIPT $@)"
+function shellmounter() {
+	cmd="$($ZSH_SHELLMOUNTER_SCRIPT $@)"
 	eval "$cmd"
 }
 
-alias um='usbmount mount'
-alias uu='usbmount unmount'
-alias ut='usbmount toggle'
-alias us='usbmount status'
+alias um='shellmounter mount'
+alias uu='shellmounter unmount'
+alias ut='shellmounter toggle'
+alias us='shellmounter status'

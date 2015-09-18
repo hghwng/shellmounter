@@ -1,4 +1,4 @@
-#compdef usbmount
+#compdef shellmounter
 local -a args
 
 if (( CURRENT == 2 )); then
@@ -15,15 +15,15 @@ fi
 if (( CURRENT == 3 )); then
 	case "$words[2]" in
 		toggle)
-			eval "$($ZSH_USBMOUNT_SCRIPT complete mount)"
+			eval "$($ZSH_SHELLMOUNTER_SCRIPT complete mount)"
 			_describe -t commands 'device' args
 			;;
 		mount)
-			eval "$($ZSH_USBMOUNT_SCRIPT complete mount)"
+			eval "$($ZSH_SHELLMOUNTER_SCRIPT complete mount)"
 			_describe -t commands 'device' args
 			;;
 		unmount)
-			eval "$($ZSH_USBMOUNT_SCRIPT complete unmount)"
+			eval "$($ZSH_SHELLMOUNTER_SCRIPT complete unmount)"
 			_describe -t commands 'device' args
 			;;
 	esac
