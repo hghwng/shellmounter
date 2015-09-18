@@ -290,24 +290,44 @@ def cmd_status():
         util_message('{0} {1}\t{2}'.format(mount_sign, block, misc_info))
 
 
+def cmd_help():
+    util_message('''
+Usage: shellmounter {toggle,mount,unmount} [DEVICE]...
+       shellmounter complete {mount,unmount}'
+       shellmounter status
+       shellmounter help
+
+toggle      toggle between mounted or unmounted
+mount       mount by partition, disk, or label
+unmount     mount by partition, disk, label or mount point
+status      show statuts of managed partitions
+complete    build variable for shell completion
+''')
+
+
 def main():
     comm_refresh_info()
+
+    if len(sys.argv) <= 1:
+        return cmd_help()
+
+    fn = {'status': cmd_status, 'help': cmd_help}.get(sys.argv[1])
+    if fn and len(sys.argv) == 2:
+        return fn()
+
+    fn = {'mount': lambda args: cmd_mount(util_match_block(args)),
+          'unmount': lambda args: cmd_unmount(util_match_block(args)),
+          'toggle': lambda args: cmd_toggle(args)}.get(sys.argv[1])
+    if fn:
+        return fn(sys.argv[2:])
+
     if sys.argv[1] == 'complete':
         if sys.argv[2] == 'mount':
-            cmd_complete_block(False)
+            return cmd_complete_block(False)
         elif sys.argv[2] == 'unmount':
-            cmd_complete_block(True)
-    elif sys.argv[1] == 'mount':
-        cmd_mount(util_match_block(sys.argv[2:]))
-    elif sys.argv[1] == 'unmount':
-        cmd_unmount(util_match_block(sys.argv[2:]))
-    elif sys.argv[1] == 'toggle':
-        cmd_toggle(sys.argv[2:])
-    elif sys.argv[1] == 'status':
-        cmd_status()
-    elif sys.argv[1] == 'dump':
-        from pprint import pprint
-        pprint(g_blocks)
+            return cmd_complete_block(True)
+
+    return cmd_help()
 
 if __name__ == '__main__':
     main()
