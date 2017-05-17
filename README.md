@@ -3,22 +3,23 @@
 
 ## Introduction
 
-Shellmounter is a user friendly script for mounting removable disks in shell. Currently Shellmounter is a plugin of oh-my-zsh.
+Shellmounter is a script for easy mounting removable disks in shell.
 
 Features:
 
-* Select filesystem to mount or unmount
-  * Completion for `mount` `unmount` and `toggle` command.
-  * Information in comments of completion, including lable, size, and device model.
-  * Select in batch giving multiple filesystems in command line
-* Mount
-  * Auto `cd` to mountpoint when single filesystem is mounted.
-  * Auto `cd` to common prefix of mountpoints when multiple filesystems are mounted.
-* Unmount
-  * Auto `cd` to parent directory, when current shell occupies the filesystem.
-  * Auto `lsof` when other process occupies the filesystem
+* Easy selection of filesystem
+  * Completion for `mount` `unmount` and `toggle` command
+  * Details in completion menu: partition label, size, device model
+  * Batch operation: select a device to mount or unmount all filesystems inside
+* Mount: smart directory switching
+  * One filesystem is mounted: switch to the mount point
+  * Multiple filesystems are mounted: switch to common prefix of the mount points
+* Unmount: smart filesystem occupation detection
+  * Automatically switch away, when current shell occupies the filesystem
+  * Automatically show processes occupying the filesystem when unmount fails
 
-# Install
+## Install
+### oh-my-zsh
 
 First download shellmounter:
 
@@ -31,6 +32,22 @@ Then enable the plugin in `~/.zshrc`
 
 ```zsh
 plugins=(... shellmounter)
+```
+
+### Prezto
+First download shellmounter:
+
+```zsh
+cd ~/.zprezto/modules
+git clone https://github.com/hghwng/shellmounter
+```
+
+Then enable the plugin in `~/.zpreztorc`
+
+```zsh
+zstyle ':prezto:load' pmodule \
+   [...] \
+  'shellmounter'
 ```
 
 ## Using shellmounter
